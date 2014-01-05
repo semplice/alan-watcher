@@ -8,5 +8,5 @@ project {
 
 data.desktop {
 	files = alan-watcher.desktop
-	install-directory = $(options.data-directory)/applications
+	install-directory = $(options.system-config-directory)/xdg/autostart
 }
