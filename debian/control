@@ -10,6 +10,6 @@ Vcs-Browser: https://github.com/semplice/alan-watcher
 
 Package: alan-watcher
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, nala0
 Description: official alan2 watcher
  This is the official alan2 watcher used in Semplice (6+).
