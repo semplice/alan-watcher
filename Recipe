@@ -1,0 +1,12 @@
+# Bake is awesome!
+
+project {
+	name = alan-watcher
+	version = 1.0.0
+	minimum-bake-version = 0.1
+}
+
+data.desktop {
+	files = alan-watcher.desktop
+	install-directory = $(options.data-directory)/applications
+}
