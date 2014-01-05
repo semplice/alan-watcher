@@ -2,7 +2,7 @@ Source: alan-watcher
 Section: utils
 Priority: optional
 Maintainer: Eugenio Paolantonio (g7) <me@medesimo.eu>
-Build-Depends: debhelper (>= 8.0.0), bake, libgee-dev, libglib2.0-dev, valac-0.20, nala-dev
+Build-Depends: debhelper (>= 8.0.0), bake, libgee-dev, libglib2.0-dev, valac-0.20, nala-dev, nala-vapi
 Standards-Version: 3.9.5
 Homepage: https://github.com/semplice/alan-watcher
 Vcs-Git: https://github.com/semplice/alan-watcher.git
