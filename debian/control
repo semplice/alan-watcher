@@ -1,0 +1,15 @@
+Source: alan-watcher
+Section: utils
+Priority: optional
+Maintainer: Eugenio Paolantonio (g7) <me@medesimo.eu>
+Build-Depends: debhelper (>= 8.0.0), bake, libgee-dev, libglib2.0-dev, valac-0.20, nala-dev
+Standards-Version: 3.9.5
+Homepage: https://github.com/semplice/alan-watcher
+Vcs-Git: https://github.com/semplice/alan-watcher.git
+Vcs-Browser: https://github.com/semplice/alan-watcher
+
+Package: alan-watcher
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: official alan2 watcher
+ This is the official alan2 watcher used in Semplice (6+).
