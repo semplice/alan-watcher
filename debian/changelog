@@ -1,3 +1,9 @@
+alan-watcher (1.0.0-2) unstable; urgency=low
+
+  * Depend on nala0.
+
+ -- Eugenio Paolantonio (g7) <me@medesimo.eu>  Sun, 05 Jan 2014 13:59:40 +0100
+
 alan-watcher (1.0.0-1) unstable; urgency=low
 
   * Initial release 
