@@ -34,7 +34,7 @@ class AlanWatcher.Main : GLib.Object {
 		public void add_to_queue(Nala.WatcherPool pool, Nala.Watcher watcher, File trigger, FileMonitorEvent event) {
 			/** This method is fired when some event happened in our watcher/watcherpool. **/
 			
-			stdout.printf("Adding to queue, %s\n", trigger.get_path());
+			message("Adding to queue, %s\n", trigger.get_path());
 			this.queue.add_to_queue(watcher, trigger, event);
 		}
 		
@@ -47,7 +47,7 @@ class AlanWatcher.Main : GLib.Object {
 		try {
 			Process.spawn_command_line_sync("openbox --reconfigure");
 		} catch (SpawnError e) {
-			stderr.printf("ERROR: Unable to reconfigure openbox: %s\n", e.message);
+			warning("ERROR: Unable to reconfigure openbox: %s\n", e.message);
 		}
 	
 	}
@@ -61,7 +61,7 @@ class AlanWatcher.Main : GLib.Object {
 			try {
 				Process.spawn_command_line_sync("alan-menu-updater " + app.path);
 			} catch (SpawnError e) {
-				stderr.printf("ERROR: Unable to update menu: %s\n", e.message);
+				warning("ERROR: Unable to update menu: %s\n", e.message);
 			}
 		}
 		
@@ -82,13 +82,32 @@ class AlanWatcher.Main : GLib.Object {
 		// Wanna some setup?
 		var dir = File.new_for_path(Environment.get_home_dir() + "/.config/alan-menus");
 		if (!dir.query_exists()) {
+			// Check for livemode, and if we are in nolock
+			var livemode = File.new_for_path("/etc/semplice-live-mode");
+			if (livemode.query_exists()) {
+				// We are in live, read /etc/semplice-live-mode to get
+				// current mode.
+				string line = "nolock";
+				try {
+					var inputstream = new DataInputStream(livemode.read());
+					line = inputstream.read_line().replace("\n","");
+				} catch {
+					warning("Unable to open inputstream.");
+				}
+				
+				if (line != "nolock") {
+					// still initializing, do not need setup now.
+					message("Not doing alan2 setup now, user still outside of nolock mode.");
+					return 0;
+				}
+			}
+			
 			// Doing setup
 			try {
 				// FIXME: semplice is hardcoded
 				Process.spawn_command_line_sync("/usr/share/alan2/alan2-setup.sh semplice");
 			} catch (SpawnError e) {
-				stderr.printf("ERROR: Unable to setup alan2: %s\n", e.message);
-				return 1;
+				error("ERROR: Unable to setup alan2: %s\n", e.message);
 			}
 			
 			
@@ -123,8 +142,7 @@ class AlanWatcher.Main : GLib.Object {
 				queue.add_application(app);
 			}
 		} catch (Error e) {
-			stderr.printf("ERROR: Unable to access to the watchers directory.");
-			return 1;
+			error("ERROR: Unable to access to the watchers directory.");
 		}
 		
 		
