@@ -1,3 +1,9 @@
+alan-watcher (1.0.1-1) unstable; urgency=low
+
+  * Do not do setup if we are in live and outside nolock.
+
+ -- Eugenio Paolantonio (g7) <me@medesimo.eu>  Thu, 16 Jan 2014 23:11:07 +0100
+
 alan-watcher (1.0.0-4) unstable; urgency=low
 
   * Rebuild to match changes on nala-dev.
