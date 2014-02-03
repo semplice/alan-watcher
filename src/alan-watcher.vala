@@ -56,7 +56,7 @@ class AlanWatcher.Main : GLib.Object {
 		/** Called when the queue timeout finishes. This method updates the menu. **/
 
 		foreach(Nala.Application app in apps) {
-			stdout.printf("Regenerating %s\n", app.path);
+			message("Regenerating %s\n", app.path);
 			
 			try {
 				Process.spawn_command_line_sync("alan-menu-updater " + app.path);
@@ -68,8 +68,24 @@ class AlanWatcher.Main : GLib.Object {
 		reconfigure_openbox();
 	}
 	
+	static void update_menu_simple(Nala.Application app) {
+		/** Do what update_menu() does, in a simple single way. **/
+		
+		message("Regenerating %s\n", app.path);
+		
+		try {
+			Process.spawn_command_line_sync("alan-menu-updater " + app.path);
+		} catch (SpawnError e) {
+			warning("ERROR: Unable to update menu: %s\n", e.message);
+		}
+		
+		reconfigure_openbox();
+	}
+	
 	static int main() {
 		/** Hello! **/
+		
+		uint[] TimeoutList = new uint[0];
 		
 		Nala.WatcherPool pool = new Nala.WatcherPool();
 		Nala.Queue queue = new Nala.Queue(3);
@@ -134,9 +150,33 @@ class AlanWatcher.Main : GLib.Object {
 				files += "/etc/alan/alan.conf";
 				files += Environment.get_home_dir() + "/.config/alan/alan.conf";
 				files += Environment.get_home_dir() + "/.gtkrc-2.0";
-				
-				// Generate application and add to pool and queue
+
+				// Generate application
 				Nala.Application app = new Nala.Application(application, files);
+
+				// Check for timer
+				if (watcher.has_key("nala", "timer")) {
+					// Yeah!
+					TimeoutList += Timeout.add_seconds_full(
+						Priority.DEFAULT,
+						watcher.get_integer("nala", "timer"),
+						() => {
+							update_menu_simple(app);
+							return true;
+						}
+					);
+				}
+				
+				// should refresh on first start?
+				if (watcher.has_key("nala", "refresh_on_start")) {					
+					if (watcher.get_boolean("nala", "refresh_on_start")) {
+						message("Refreshing because of refresh_on_start in watcher...");
+						// Ok, let's make a call to update_menu_simple.
+						update_menu_simple(app);
+					}
+				}
+				
+				// add application to pool and queue
 				applications_objects[application] = app;
 				pool.add_watchers(app.triggers);
 				queue.add_application(app);
